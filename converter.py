@@ -58,8 +58,6 @@ def convert(image, width=0, height=0, charset="full", verbose=False):
 
     # load image
     im = Image.open(image)
-    if verbose:
-        
 
     # set output width and height if not given
     if width == 0 and height == 0:
