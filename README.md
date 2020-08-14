@@ -1,4 +1,12 @@
-![Lenna](examples/Lenna.png) ![Lenna Converted](examples/lenna_letters.png)
+<!-- ![Lenna](examples/Lenna.png) ![Lenna Converted](examples/lenna_letters.png) -->
+
+
+<p align="center">
+  <img src="examples/Lenna.png" />
+  <img src="examples/lenna_letters.png" />
+</p>
+
+
 ---
 # img2term
 Render images in your terminal using unicode characters and ANSI color codes
