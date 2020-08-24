@@ -18,5 +18,5 @@ class CharImage:
     def printable(self):
         out = ""
         for row in self.image:
-            out += "".join(c.printable() for c in row) +"\x1b[0m"
+            out += "".join(c.printable() for c in row) + "\x1b[0m" + "\n"
         return out
