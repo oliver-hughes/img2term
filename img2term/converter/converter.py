@@ -1,5 +1,7 @@
 from PIL import Image
-from char2esc import c2e
+import numpy as np
+from .char2esc import c2e
+from .charimage import CharImage, CharPixel
 full_blocks = {
     u"█": 0xffffffff,# FULL BLOCK
 }
@@ -48,6 +50,7 @@ def differentbits(hex1, hex2):
 
 def convert(image, width=0, height=0, charset="full", verbose=False):
 
+    # build dictionary of characters for output
     img_chars = full_blocks
     if charset != "full_blocks":
         img_chars = {**img_chars, **half_blocks}
@@ -68,9 +71,12 @@ def convert(image, width=0, height=0, charset="full", verbose=False):
     # resize image to match output size *= 4
     im = im.resize((width*4, height*8))
 
-    out = [["" for w in range(width)] for h in range(height)]
-
+    # out = CharImage(width, height)
+    # out_image = []
+    # out = [["" for w in range(width)] for h in range(height)]
+    out = []
     for cy in range(int(height)):
+        out_row = []
         for cx in range(int(width)):
             # offset pixel x,y from char x,y
             px = cx * 4
@@ -144,6 +150,9 @@ def convert(image, width=0, height=0, charset="full", verbose=False):
                 colours[0] = colours[1]
                 colours[1] = temp
 
-            out[cy][cx] = c2e(output_char, colours[0], colours[1])
+            # out[cy][cx] = c2e(output_char, colours[0], colours[1])
+            # out.set(cx, cy, CharPixel(output_char, colours[1], colours[0]))
+            out_row.append(CharPixel(output_char, colours[1], colours[0]))
+        out.append(out_row)
 
-    return out
+    return CharImage(out)
