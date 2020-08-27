@@ -1,10 +1,9 @@
 <!-- ![Lenna](examples/Lenna.png) ![Lenna Converted](examples/lenna_letters.png) -->
-
-
 <p align="center">
-  <img src="examples/Lenna.png" />
-  <img src="examples/lenna_letters.png" />
+  <img src="examples/gatsby.gif" />
 </p>
+
+
 
 
 ---
@@ -65,3 +64,10 @@ allowing much finer subdivisions of each character
 
 
 `full`, the default value, consists of all of the above, along with:`▚`,`▒`,`━`,`┃`,`╱`,`╲`,`◢`,`◣`,`◤`,`◥`. Making even finer details possible with the inclusion of angles.
+
+
+## Examples
+<p align="center">
+  <img src="examples/Lenna.png" />
+  <img src="examples/lenna_letters.png" />
+</p>
