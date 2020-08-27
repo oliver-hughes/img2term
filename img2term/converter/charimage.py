@@ -11,6 +11,8 @@ class CharPixel:
 class CharImage:
     def __init__(self, char_array):
         self.image = char_array
+        self.height = len(self.image)
+        self.width = len(self.image[0])
 
     def set(self, x, y, charpix):
         self.image[x][y] = charpix

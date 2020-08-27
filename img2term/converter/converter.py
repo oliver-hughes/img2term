@@ -1,4 +1,4 @@
-from PIL import Image
+from PIL import Image, ImageSequence
 import numpy as np
 from .char2esc import c2e
 from .charimage import CharImage, CharPixel
@@ -48,32 +48,7 @@ def differentbits(hex1, hex2):
             total += 1
     return total
 
-def convert(image, width=0, height=0, charset="full", verbose=False):
-
-    # build dictionary of characters for output
-    img_chars = full_blocks
-    if charset != "full_blocks":
-        img_chars = {**img_chars, **half_blocks}
-        if charset != "half_blocks":
-            img_chars = {**img_chars, **quarter_blocks}
-            if charset != "quarter_blocks":
-                img_chars = {**img_chars, **non_blocks}
-
-    # load image
-    im = Image.open(image)
-
-    # set output width and height if not given
-    if width == 0 and height == 0:
-        width, height = im.size
-        width = int(width/4)
-        height = int(height/8)
-
-    # resize image to match output size *= 4
-    im = im.resize((width*4, height*8))
-
-    # out = CharImage(width, height)
-    # out_image = []
-    # out = [["" for w in range(width)] for h in range(height)]
+def img2chars(im, width, height, img_chars):
     out = []
     for cy in range(int(height)):
         out_row = []
@@ -149,10 +124,55 @@ def convert(image, width=0, height=0, charset="full", verbose=False):
                 temp = colours[0]
                 colours[0] = colours[1]
                 colours[1] = temp
-
-            # out[cy][cx] = c2e(output_char, colours[0], colours[1])
-            # out.set(cx, cy, CharPixel(output_char, colours[1], colours[0]))
             out_row.append(CharPixel(output_char, colours[1], colours[0]))
         out.append(out_row)
 
     return CharImage(out)
+
+
+def convert(image, width=0, height=0, charset="full", verbose=False, animated=False):
+
+    # build dictionary of characters for output
+    img_chars = full_blocks
+    if charset != "full_blocks":
+        img_chars = {**img_chars, **half_blocks}
+        if charset != "half_blocks":
+            img_chars = {**img_chars, **quarter_blocks}
+            if charset != "quarter_blocks":
+                img_chars = {**img_chars, **non_blocks}
+
+    # load image
+    im = Image.open(image)
+    is_gif = im.format == "GIF"
+
+    # set output width and height if not given
+    if width == 0 and height == 0:
+        width, height = im.size
+        width = int(width/4)
+        height = int(height/8)
+
+    if is_gif and animated:
+        frames = []
+        frame_time = im.info['duration'] / 1000
+        total_frames = im.n_frames
+        for f in range(total_frames):
+            im.seek(f)
+            print("Processing frame {}/{}".format(im.tell(), total_frames))
+            # print("\x1b[1A")
+            frame = im.convert('RGB')
+            frame = frame.resize((width*4, height*8))
+            frames.append(img2chars(frame, width, height, img_chars))
+            print("\x1b[K \x1b[2A")
+        return frames, frame_time
+
+    else:
+        # if image is a gif, but not to display animated
+        if is_gif:
+            im.seek(0)
+            im = im.convert('RGB')
+        im = im.resize((width*4, height*8))
+
+        # if image is not a gif, but chosen to display animated
+        if animated:
+            return [img2chars(im, width, height, img_chars)], 0
+        return img2chars(im, width, height, img_chars)
